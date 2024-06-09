@@ -41,8 +41,9 @@ M.push = function(name, mode, mappings)
 		end
 	end
 
-	M._stack[name] = {
-		mode = mode,
+	M._stack[name] = M._stack[name] or {}
+
+	M._stack[name][mode] = {
 		existing = existing_maps,
 		mappings = mappings,
 	}
@@ -57,9 +58,9 @@ M.push("debug_mode", "n", {
 	[" go"] = "<cmd>echo 'Non-existent git mapping'<CR>",
 })
 
-M.pop = function(name)
-	local state = M._stack[name]
-	M._stack[name] = nil
+M.pop = function(name, mode)
+	local state = M._stack[name][mode]
+	M._stack[name][mode] = nil
 
 	for lhs, rhs in pairs(state.mappings) do
 		if state.existing[lhs] then
